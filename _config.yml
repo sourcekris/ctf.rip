@@ -31,8 +31,6 @@ future:      false  # publish future dated posts --  true, false (default)
 highlighter: rouge
 markdown:    kramdown
 plugins:
-  - jekyll-paginate
-gems:
   - jekyll-sitemap
   - jekyll-paginate
   - jekyll-gist
