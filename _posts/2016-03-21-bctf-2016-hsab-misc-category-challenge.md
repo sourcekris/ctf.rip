@@ -174,7 +174,7 @@ dlcall free $statbuf
 
 
 
-I just paste it straight in at the prompt  <img src="http://ctf.rip/wp-content/plugins/classic-smilies/img/icon_smile.gif" alt=":)" class="wp-smiley" style="height: 1em; max-height: 1em;" />The important part of the result is:
+I just paste it straight in at the prompt  <img src="https://ctf.rip/images/classic-smilies/icon_smile.gif" alt=":)" class="wp-smiley" style="height: 1em; max-height: 1em;" />The important part of the result is:
 
 ```
 -bash-4.4$ printf "\tmode: %o\n" ${stat[st_mode]##*:}

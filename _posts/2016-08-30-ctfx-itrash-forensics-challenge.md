@@ -44,7 +44,7 @@ categories:
 ---
 For this one we're given a link to a Megaupload hosted file. It's a 93mb file so it's gotta be good! The clue was:
 
-> I got locked out of my iTrash <img src="http://ctf.rip/wp-content/plugins/classic-smilies/img/icon_sad.gif" alt=":(" class="wp-smiley" style="height: 1em; max-height: 1em;" />
+> I got locked out of my iTrash <img src="https://ctf.rip/images/classic-smilies/icon_sad.gif" alt=":(" class="wp-smiley" style="height: 1em; max-height: 1em;" />
 > 
 > `1 2 3`
 > `4 5 6`

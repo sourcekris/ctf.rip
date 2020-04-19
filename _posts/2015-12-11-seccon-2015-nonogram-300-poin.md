@@ -19,7 +19,7 @@ Short break but we're back CTFing. I've been away because I took a month of lab 
 
 A <a href="https://en.wikipedia.org/wiki/Nonogram" target="_blank">nonogram</a> is a type of Japanese crossword type puzzle with numbers. You fill in boxes based on numbers in the rows and columns and eventually make a picture.
 
-The SecCon implementation looked like this (NO! added for comedic effect  <img src="http://ctf.rip/wp-content/plugins/classic-smilies/img/icon_razz.gif" alt=":P" class="wp-smiley" style="height: 1em; max-height: 1em;" />):
+The SecCon implementation looked like this (NO! added for comedic effect  <img src="https://ctf.rip/images/classic-smilies/icon_razz.gif" alt=":P" class="wp-smiley" style="height: 1em; max-height: 1em;" />):
 
 <div class="separator" style="clear: both; text-align: center;">
   <a href="/images/2015/12/nonogram-2.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="/images/2015/12/nonogram-2.png" /></a>
@@ -47,7 +47,7 @@ With that engine, some very rough web and table parsing code, and we had a solve
 We had to do this a total of 30 times and the solutions aren't always perfect and the QR codes don't always work so a few attempts need to be run.
 
 
-Anyway, I include the code before, sorry you have to see this messy hack but I don't mind, 300 points it got me <img src="http://ctf.rip/wp-content/plugins/classic-smilies/img/icon_smile.gif" alt=":)" class="wp-smiley" style="height: 1em; max-height: 1em;" />
+Anyway, I include the code before, sorry you have to see this messy hack but I don't mind, 300 points it got me <img src="https://ctf.rip/images/classic-smilies/icon_smile.gif" alt=":)" class="wp-smiley" style="height: 1em; max-height: 1em;" />
 
 ```
 #!/usr/bin/python

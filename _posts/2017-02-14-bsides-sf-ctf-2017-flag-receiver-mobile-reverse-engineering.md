@@ -47,7 +47,7 @@ The second mobile reversing challenge of BSides SF CTF. Slightly harder than the
 > **Flag Receiver - 200**
 > Here is a simple mobile application that will hand you the flag.. if you ask for it the right way.
 > 
-> P.S, it is meant to have a blank landing activity  <img src="http://ctf.rip/wp-content/plugins/classic-smilies/img/icon_smile.gif" alt=":)" class="wp-smiley" style="height: 1em; max-height: 1em;" />Use string starting with Flag:
+> P.S, it is meant to have a blank landing activity  <img src="https://ctf.rip/images/classic-smilies/icon_smile.gif" alt=":)" class="wp-smiley" style="height: 1em; max-height: 1em;" />Use string starting with Flag:
 > 
 > <a href="https://github.com/sourcekris/ctf-solutions/raw/master/re/bsidessf17-flagstore/flagstore.apk" target="_blank">flagstore.apk</a>
 

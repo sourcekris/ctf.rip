@@ -273,7 +273,7 @@ Loader> $ 050025000400203a01000500647204006..... <all the vm bytecode here>
 >>
 
 ```
-It's now a disassembler  <img src="http://ctf.rip/wp-content/plugins/classic-smilies/img/icon_smile.gif" alt=":)" class="wp-smiley" style="height: 1em; max-height: 1em;" />We can even step through the code instruction by instruction and learn everything about the VM code necessary. By the time we're finished with the disassembler we have this asm code for the virtual machine: 
+It's now a disassembler  <img src="https://ctf.rip/images/classic-smilies/icon_smile.gif" alt=":)" class="wp-smiley" style="height: 1em; max-height: 1em;" />We can even step through the code instruction by instruction and learn everything about the VM code necessary. By the time we're finished with the disassembler we have this asm code for the virtual machine: 
 ```
 0000 05002500 ; MOVH r0 #2500
 0004 0400203a ; MOVL r0 #203a

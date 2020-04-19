@@ -17,7 +17,7 @@ tags:
   - Stego
   - WAV
 ---
-Sorry but this challenge was not solved by me during the competition but afterwards I came to know the solution by way of IRC and wanted to document it in case I forget. It was only worth 2 points but was solved by very few teams during the competition. Normally I don't let this bug me but I missed these obvious things so I'll share them with others so we don't make such mistakes next time <img src="http://ctf.rip/wp-content/plugins/classic-smilies/img/icon_smile.gif" alt=":)" class="wp-smiley" style="height: 1em; max-height: 1em;" />
+Sorry but this challenge was not solved by me during the competition but afterwards I came to know the solution by way of IRC and wanted to document it in case I forget. It was only worth 2 points but was solved by very few teams during the competition. Normally I don't let this bug me but I missed these obvious things so I'll share them with others so we don't make such mistakes next time <img src="https://ctf.rip/images/classic-smilies/icon_smile.gif" alt=":)" class="wp-smiley" style="height: 1em; max-height: 1em;" />
 
 lily.flac was a FLAC file, a type of lossless compression for audio files. When we download the file we can decompress it with the flac program pre-installed on Kali:
 
