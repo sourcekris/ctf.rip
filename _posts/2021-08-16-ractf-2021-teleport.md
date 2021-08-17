@@ -81,7 +81,7 @@ If we right click and follow that call we see the subroutine sets up a call to a
 
 ![Call to set_position_Injected](/images/2021/ractf/teleport10.PNG)
 
-At this point I hypothesised that the two instructions placing 0x00 on the stack were actually placing the `X` and `Y` co-ordinates of the spawn location`(x=0, y=0)`and passing those directly into the Unity API. So if I could modify those coordinates I might be able to respawn anywhere on the map. Cheat Engine is great, it lets you modify instructions in RAM so thats what I did. I right clicked and `Assembled new instructions` here:
+At this point I hypothesised that the two instructions placing `0x00` on the stack were actually placing the `X` and `Y` co-ordinates of the spawn location`(x=0, y=0)`and passing those directly into the Unity API. So if I could modify those coordinates I might be able to respawn anywhere on the map. Cheat Engine is great, it lets you modify instructions in RAM so thats what I did. I right clicked and `Assembled new instructions` here:
 
 ![Assembling new instructions](/images/2021/ractf/teleport11.PNG)
 
@@ -93,7 +93,7 @@ And the disassembler confirmed the instructions looked right:
 
 ![Looks ready to go](/images/2021/ractf/teleport13.PNG)
 
-So then I threw myself into the killed cube and died. When I respawned, sure enough I was inside the grey cube and could read the flag:
+So then I threw myself into the killer cube and died. When I respawned, sure enough I was inside the grey cube and could read the flag:
 
 ![Flag](/images/2021/ractf/teleport15.PNG)
 
