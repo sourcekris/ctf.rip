@@ -74,7 +74,7 @@ We then get 64 tries at this before the server says `no more...`
 
 Thus the server is somewhat of an oracle for the plaintext. We can say that because of the properties of Python integer division operator `(//)`. When you use integer division and `y>x` the result  is `0` you can not receive some float result `< 1`
 
-Therefore in the python code `pow(g, x // div, p)`, if we provide some number `div > x` the result will be `0`. Any number raised to the power of `0` is `1`. So the result of `g^1 mod p == 1`. An example:
+Therefore in the python code `pow(g, x // div, p)`, if we provide some number `div > x` the result will be `0`. Any number raised to the power of `0` is `1`. So the result of `g^0 mod p == 1`. An example:
 
 ```shell
 $ nc crypto.be.ax 6000
