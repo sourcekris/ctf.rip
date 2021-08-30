@@ -11,7 +11,7 @@ categories:
 ---
 Busy weekend with three simultaneous CTFs. I finished 19th over on this one so I feel like I should probably do at least one writeup. This is an unusual category for me, **Internet of Things** (IOT) which is a lot about firmware reverse engineering usually. Here's the three challenges I solved Firm1, Firm2, and Firm3 as they're all related.
 
-#### Firm 1 - IOT - 244 Points
+#### <a name="firm1"></a>Firm 1 - IOT - 244 Points
 
 This challenge reads:
 
@@ -59,18 +59,19 @@ We know from the clue that we need to get the `secret password` and the Kernel v
 
 ```shell
 $ cd _Firm-1.bin.extracted
-$ ls -la                                                                                                   
-total 25004                                                                                                  
-drwxr-xr-x  5 root root        4096 Aug 29 22:48 .                                                           
-drwxr-xr-x  5 root root        4096 Aug 29 22:48 ..                                                          
--rw-r--r--  1 root root     3353388 Aug 29 22:48 200040.squashfs                                             
--rw-r--r--  1 root root      572594 Aug 29 22:48 550040.squashfs                                             
--rw-r--r--  1 root root     4849664 Aug 29 22:48 5F0040.jffs2                                                
--rw-r--r--  1 root root     5728840 Aug 29 22:48 80                                                          
--rw-r--r--  1 root root    11075520 Aug 29 22:48 80.7z                                                       
-drwxr-xr-x  3 root root        4096 Aug 29 22:48 jffs2-root                                                  
-drwxrwxr-x 25 root root        4096 May  5  2019 squashfs-root                                               
+$ ls -la                                                                 
+total 25004                                                               
+drwxr-xr-x  5 root root        4096 Aug 29 22:48 .                       
+drwxr-xr-x  5 root root        4096 Aug 29 22:48 ..                       
+-rw-r--r--  1 root root     3353388 Aug 29 22:48 200040.squashfs         
+-rw-r--r--  1 root root      572594 Aug 29 22:48 550040.squashfs
+-rw-r--r--  1 root root     4849664 Aug 29 22:48 5F0040.jffs2
+-rw-r--r--  1 root root     5728840 Aug 29 22:48 80
+-rw-r--r--  1 root root    11075520 Aug 29 22:48 80.7z
+drwxr-xr-x  3 root root        4096 Aug 29 22:48 jffs2-root
+drwxrwxr-x 25 root root        4096 May  5  2019 squashfs-root
 drwxr-xr-x  2  501 dialout     4096 Aug  2  2018 squashfs-root-0
+
 $ ls -la squashfs-root/etc/shadow
 -rw------- 1 root root 244 Aug 15 11:28 squashfs-root/etc/shadow
 
@@ -123,7 +124,7 @@ Linux version 3.10.14 (wuhx@ubuntu) (gcc version 4.7.2 (Ingenic r2.3.3 2016.12) 
 
 Reading the clue, it asks for the flag format *wormcon{secret_version}* so we send `wormcon{P@ssw0rd_3.10.14}` which is accepted and were 1/3 completed.
 
-#### Firm2 - IOT - 436 Points
+#### <a name="firm2"></a>Firm2 - IOT - 436 Points
 
 This challenge has almost no clues so I am apprehensive about trying it, we get:
 
@@ -205,7 +206,7 @@ Combined with the port `80` we knew we were able to browse that url http://mlskx
 
 Part 2 down. On to Part 3...
 
-#### Firm3 - IOT - 436 Points
+#### <a name="firm3"></a>Firm3 - IOT - 436 Points
 
 This challenge has almost no clues so I am apprehensive about trying it, we get:
 
