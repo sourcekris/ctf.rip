@@ -13,8 +13,8 @@ owner:
   avatar:         avatar.jpg
   bio:            "Infosec professional, googler, security researcher, eternal student and avid CTFer"
   # Social networking links used in footer. Update and remove as you like.
-  twitter:       https://twitter.com/CTFKris 
-  github:        https://github.com/sourcekris 
+  twitter:       CTFKris 
+  github:        sourcekris 
 
 # Background image to be tiled on all pages
 background: 
