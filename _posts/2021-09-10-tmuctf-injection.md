@@ -3,7 +3,7 @@ title: 'TMUCTF 2021: Injection'
 date: 2021-09-10T00:00:00+00:00
 author: Kris
 layout: post
-image: /images/2021/tmuctf/injectiontitle.png
+image: /images/2021/tmuctf/injectiontitle2.png
 categories:
   - Write-Ups
   - Web
