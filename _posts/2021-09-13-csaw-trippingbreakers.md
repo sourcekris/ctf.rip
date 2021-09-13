@@ -79,7 +79,7 @@ Ok so looks like a scheduled task log, a registry hive from a Windows machine ex
 
 Since the clue mentions the scheduled task in April 2021 I decided to start there first and loaded the CSV file into Google Sheets and filtered the `Last Run Time` field to April 2021 entries. 99% of the stuff was standard Windows background noise but one task stood out. Mainly because it was called `Lights Off` and was the only task created by a named user `AP-G-DIST-57\Tyrell`
 
-![lights out task](/imgages/2021/csaw/tripping1.PNG)
+![lights out task](/images/2021/csaw/tripping1.PNG)
 
 This log entry also named the `Task To Run` and this field was set to `Powershell.exe -ExecutionPolicy Bypass %temp%\wcr_flail.ps1`
 
