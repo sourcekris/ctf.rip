@@ -236,3 +236,4 @@ if __name__ == "__main__":
 Which when I ran it, spat out the flag in around 60 seconds. 
 
 It was fun to code but it took a lot of time away from other challenges worth a lot more points. Oh well!
+
