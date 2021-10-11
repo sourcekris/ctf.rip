@@ -117,9 +117,12 @@ Then I run a quick test to check this is doing what I want:
 
 ```shell
 $ gcc tt.c -shared -o tt.so
-$ gcc test.c -o test                                                                                                             $ ./test                                                                                                                         1633947242
+$ gcc test.c -o test
+$ ./test
+1633947242
 $ export TIMETHING=13371337
-$ LD_PRELOAD=./tt.so ./test                                                                                                       13371337
+$ LD_PRELOAD=./tt.so ./test
+13371337
 ```
 
 Great. We can, by `LD_PRELOAD` force `time()` to be whatever we want. All we need to do now is run time backwards (by decrementing `TIMETHING`) until we get the flag.
