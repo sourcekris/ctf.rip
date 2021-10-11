@@ -81,11 +81,11 @@ So this is nice and easy, it's doing the following:
 - Using a constant initialization vector (IV) and that a key made of the string representation of the time, decrypting a constant ciphertext.
 - If the Ciphertext begins with `DO{` then the decryption succeeded and the flag is printed.
 
-Then all we need to decrypt this is the compionents in the binary and to implement the algorithm in Python or something and count backwards until the payload decrypts?
+Then all we need to decrypt this is the components in the binary and to implement the algorithm in Python or something and count backwards until the payload decrypts?
 
 Well that seems logical but after exhausting a large amount of the possible keyspace with a Python script it wasn't working. 
 
-So out comes my backup solution. 
+So out comes my **backup solution**. 
 
 First I wrote a quick shared object to replace the `libc` `time()` function. I need a way for it to take input from the environment though because I didn't want to fiddle with my actual clock or anything. So I wrote this stub:
 
@@ -151,3 +151,4 @@ flag: b'Flag: DO{V3ry_n1Ce_t1MInG5_!1}\x08\x08\x08\n'
 ```
 
 I'm still not sure why my Python code did not solve it. I probably got the endianness of one of the components wrong or something but this backup method solved it while I was trying to get that working so that was nice to not need to debug the python anymore.
+
