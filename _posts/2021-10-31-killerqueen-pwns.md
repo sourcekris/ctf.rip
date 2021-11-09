@@ -1,6 +1,6 @@
 ---
 title: 'Killer Queen CTF: Binary Exploitation'
-date: 2021-10-17T00:00:00+00:00
+date: 2021-10-31T00:00:00+00:00
 author: Kris
 layout: post
 image: /images/2021/killerqueen/title.png
