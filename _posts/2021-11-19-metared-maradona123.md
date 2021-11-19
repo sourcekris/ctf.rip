@@ -10,7 +10,7 @@ categories:
 ---
 Here's three more binary exploitation challenges from the 4th edition of MetaRed CTF 2021. Each was the same theme but different exploits were necessary each time.
 
-#### <a name="maradona1"></a>Maradona1 - Pwn - 400 points
+#### <a name="maradona1"></a>Maradona1 - Pwn - 147 points
 
 This challenge comes one file called `reto` which, upon inspection is a 64 bit ELF binary and from `checksec` we can see canaries are enabled but PIE is disabled. Interesting.
 
@@ -462,7 +462,7 @@ La best flag is: flag{test_flag_here_for_writeup}
 
 
 
-#### <a name="maradona3"></a>Maradona3 - Pwn - 450 points
+#### <a name="maradona3"></a>Maradona3 - Pwn - 436 points
 
 This challenge again comes one file called `reto` which is different to the binary used in Maradona1 and Maradona2. Upon inspection is a 64 bit ELF binary, again statically linked and from `checksec` we can see canaries are enabled but PIE is disabled again.
 
