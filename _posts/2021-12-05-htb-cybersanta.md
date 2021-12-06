@@ -1,6 +1,6 @@
 ---
-title: 'HTB CyberSanta 2021 - XMas Spirit'
-date: 2021-11-29T00:00:00+00:00
+title: 'HTB CyberSanta 2021 - Crypto Writeups'
+date: 2021-12-05T00:00:00+00:00
 author: Kris
 layout: post
 image: /images/2021/cybersanta/title.png
