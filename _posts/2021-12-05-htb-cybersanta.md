@@ -493,7 +493,7 @@ cyb3rXm45!@#46b2
 02c7cyb3rXm45!@#
 ```
 
-I know this is the wrong solution but it was so fast that I don't think I could have even Google'd the write solution in just 9 minutes. 
+I know this is the wrong solution but it was so fast that I don't think I could have even Google'd the right solution in just 9 minutes. 
 
 #### <a name="warehouse"></a>Warehouse Maintenance - Crypto - 325 points
 
