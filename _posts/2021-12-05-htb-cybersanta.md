@@ -463,11 +463,6 @@ func main() {
 
 	fmt.Printf("read %d k1s and %d k2s\n", len(k1s), len(k2s))
 
-	if err != nil {
-		fmt.Printf("error decodestring %v", err)
-		return
-	}
-
 	f, _ := os.Create("poss_go.txt")
 	defer f.Close()
 
