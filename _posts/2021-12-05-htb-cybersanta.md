@@ -799,7 +799,10 @@ SQL> SELECT * FROM materials;
 [*] Process '/bin/sh' stopped with exit code 0 (pid 6844)
 [*] sending....
 
-(1, 'wood', 124)(2, 'sugar', 352)(3, 'love', 999)(4, 'glass', 719)(5, 'paint', 78)(6, 'cards', 1205)(7, 'boards', 1853)(8, 'HTB{h45hpump_15_50_c001_h0h0h0}', 1337)
+(1, 'wood', 124)(2, 'sugar', 352)(3, 'love', 999)
+(4, 'glass', 719)(5, 'paint', 78)(6, 'cards', 1205)
+(7, 'boards', 1853)
+(8, 'HTB{h45hpump_15_50_c001_h0h0h0}', 1337)
 ```
 
 And there's the flag, in the `materials` table.
