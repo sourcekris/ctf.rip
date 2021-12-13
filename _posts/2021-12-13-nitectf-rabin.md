@@ -103,10 +103,10 @@ while(true):
         print("Please enter 'E','G' or 'X'")
 ```
 
-So its a service that will generate an "RSA" like set of encryption parameters, and then offer to do two things:
+So its a service that will generate an "RSA" like set of encryption parameters, and then offers to do two things:
 
-- Encrypt an arbitrary plaintext with the RSA parameters.
-- Show you an encrypted flag.
+- **Encrypt** an arbitrary plaintext with the RSA parameters.
+- **Show** you an encrypted flag.
 
 There's a few bugs in the implementation that help us and a few bugs that hinder us. Let's explain
 
