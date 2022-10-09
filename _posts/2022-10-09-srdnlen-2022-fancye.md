@@ -1,6 +1,6 @@
 ---
 title: 'srdnlen CTF 2022 - Fancy E'
-date: 2021-12-13T00:00:00+00:00
+date: 2022-10-09T00:00:00+00:00
 author: Kris
 layout: post
 image: /images/2022/srdnlen/fancye-writeup.png
