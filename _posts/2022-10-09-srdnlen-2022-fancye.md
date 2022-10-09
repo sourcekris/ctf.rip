@@ -149,7 +149,7 @@ $ goRsaTool -key key.txt -attack wiener
 rsatool: rsatool.go:228: wiener variant attack failed
 ```
 
-I actually expected that and my idea was, *well there's a chance the script COULD make a key vulnerable to Wiener and I have 1000 attempts per connection so it's probably worth a shout*.
+I actually expected that and my idea was, *well there's a chance the script COULD make a key vulnerable to Wiener and I have 1000 attempts per connection so it's probably worth a shot*.
 
 So thats what I did. I wrote a wrapper for my [goRsaTool](https://github.com/sourcekris/goRsaTool) program to download 1000 keys and attack them. This is the code:
 
@@ -214,7 +214,6 @@ $ ./solve.py
 [+] Receiving all data: Done (503.64KB)
 [*] Closed connection to fancye.challs.srdnlen.it port 15007
 [*] Got 1000 problems...
-[▗] Wiener attack problem: 12
 [|] Wiener attack problem: 12
 [*] Got result for this combo:
 [*] c: 3351211610901731590829698105468856871206209199351368186640884673535268880114668764277536845809278212078587651181508905511014785692330691808594
