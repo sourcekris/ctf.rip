@@ -9,6 +9,8 @@ categories:
   - Security Engineering
   - Interviewing
 ---
+
+![Koala Interviewing](/images/2024/interviewing/koalainterview.jpeg)
 Landing a job as a security engineer or analyst at a tech company is a significant feat. It requires not only technical acumen but also strong interviewing skills. This article is aimed at those seeking to navigate the interview process at tech companies. We'll cover what to expect, strategies for success, and how to make the right impression during your interviews.
 
 ## Who am I?
