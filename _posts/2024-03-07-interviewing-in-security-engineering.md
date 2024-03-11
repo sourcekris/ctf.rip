@@ -3,7 +3,7 @@ title: 'Interviewing in Tech: Security Engineer & Security Analyst'
 date: 2024-03-07T00:00:00+00:00
 author: Kris
 layout: post
-image: /images/2024/interviewing/interviewing.jpg
+image: /images/2024/interviewing/koalainterview.jpeg
 categories:
   - Articles
   - Security Engineering
@@ -194,7 +194,3 @@ And avoid things of a personal or protected category nature:
 
 ## Wrapping Up
 Preparing for your security engineering or security analyst interview takes effort. Embrace it as a chance to showcase your skills and passion for security. Let these strategies guide your way, and remember, confidence combined with solid preparation can propel you towards success!
-
-#### Image Attribution
-
-Image by [Freepik](https://www.freepik.com/free-photo/medium-shot-woman-working-computer_40132873.htm#query=cybersecurity%20career&position=1&from_view=keyword&track=ais&uuid=a69bef73-7259-47d8-839e-642ea0101d4b)
